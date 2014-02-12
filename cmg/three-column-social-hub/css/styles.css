@@ -93,7 +93,7 @@
 	width: 96%;
 	margin: -20px auto 0;
 	padding: 20px 2% 0;
-	overflow:auto;
+	overflow:hidden;
 }
 
 #socialHub #wall {
