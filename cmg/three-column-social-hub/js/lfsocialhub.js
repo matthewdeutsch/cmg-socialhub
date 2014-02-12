@@ -322,4 +322,25 @@ LF.lfsocialhub.prototype.debounce = function(func, wait, immediate) {
     };
 };
 
+var levelColumns = setInterval(function(){
+    if (document.getElementsByClassName("hub-list-footer").length > 0) {
+        clearInterval(levelColumns);
+        minColHeight = Number.MAX_VALUE
+        cols = document.getElementsByClassName("streamhub-content-list-view");
+        for (col in cols){
+            minColHeight = (cols[col].offsetHeight < minColHeight) ? cols[col].offsetHeight : minColHeight;
+        }
+        document.getElementById("hub").style.height = minColHeight+"px";
+
+        var showMores = document.getElementsByClassName("hub-list-more");
+        for (showMore in showMores){
+            showMores[showMore].onclick = function(){
+                var hub = document.getElementById("hub")
+                hub.style.height = "";
+                hub.style.overflow = "auto";
+            }
+        }
+    }
+},2000);
+
 })();
