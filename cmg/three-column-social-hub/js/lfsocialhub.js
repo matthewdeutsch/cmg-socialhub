@@ -97,62 +97,7 @@ LF.lfsocialhub = function(opts) {
 		this.$header.originalTop = this.$header.position().top;
 		
 		
-		if (!this.isHandheld && !this.isTablet) { // don't do infinite scroll 
-
-			
-
-			$(window).scroll($.proxy(function() {
-				
-				if (this.opts.infiniteScroll == false) {
-
-
-					var self = this;
-					
-					var debouncedScroll = this.debounce($.proxy(function() {
-						
-						var offset = Math.ceil($(window).scrollTop() % $(window).height()/10);
-					
-						if (offset < 5) {
-							for (var view in self.views) {
-								self.views[view].showMore(15);
-							}
-							if (typeof self.wallView != "undefined") {
-								self.wallView.showMore(15);
-							}
-						}
-					},500),self);
-					
-					debouncedScroll();	
-					
-					$('.hub-list-more').each($.proxy(function(i,el) {
-						var debouncedCheck = this.debounce(function(i,el) {
-
-							var offset = $(el).offset().top - $(window).scrollTop();
-							if (offset < $(window).height()) {
-								$(el).trigger('click');
-							}
-							
-						},500);
-
-						debouncedCheck(i,el);
-					},this));
-				} else {
-
-					var offset = Math.ceil($(window).scrollTop() % $(window).height()/10);
-			
-					if (offset < 5) {
-						for (var view in this.views) {
-							this.views[view].showMore(15);
-						}
-						if (typeof this.wallView != "undefined") {
-							this.wallView.showMore(15);
-						}
-					}
-				}
-
-			},this));
-
-		} else { // Let's set up the mobile menu now
+		if (this.isHandheld || this.isTablet) { // custom menu for mobile
 		
 			$("#socialHub #socialmenu").empty();
 			
@@ -376,5 +321,26 @@ LF.lfsocialhub.prototype.debounce = function(func, wait, immediate) {
         return result;
     };
 };
+
+var levelColumns = setInterval(function(){
+    if (document.getElementsByClassName("hub-list-footer").length > 0) {
+        minColHeight = Number.MAX_VALUE
+        cols = document.getElementsByClassName("streamhub-content-list-view");
+        for (col in cols){
+            minColHeight = (cols[col].offsetHeight < minColHeight) ? cols[col].offsetHeight : minColHeight;
+        }
+        document.getElementById("hub").style.height = minColHeight+"px";
+
+        var showMores = document.getElementsByClassName("hub-list-more");
+        for (showMore in showMores){
+            showMores[showMore].onclick = function(){
+            	clearInterval(levelColumns);
+                var hub = document.getElementById("hub")
+                hub.style.height = "";
+                hub.style.overflow = "auto";
+            }
+        }
+    }
+},4000);
 
 })();
